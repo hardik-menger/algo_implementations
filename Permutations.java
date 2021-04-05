@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 class Permutations {
     public List<List<Integer>> permute1(int[] nums) {
