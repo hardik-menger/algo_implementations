@@ -1,7 +1,5 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 class CombinationSum {
     public List<List<Integer>> combinationSum(int[] candidates, int target) {
