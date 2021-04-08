@@ -1,6 +1,6 @@
 
 class RotateLinkedList {
-    class ListNode {
+    static class ListNode {
         int val;
         ListNode next;
 
