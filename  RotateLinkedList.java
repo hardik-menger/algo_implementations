@@ -1,23 +1,22 @@
-import java.util.List;
-
-class ListNode {
-    int val;
-    ListNode next;
-
-    ListNode() {
-    }
-
-    ListNode(int val) {
-        this.val = val;
-    }
-
-    ListNode(int val, ListNode next) {
-        this.val = val;
-        this.next = next;
-    }
-}
 
 class RotateLinkedList {
+    class ListNode {
+        int val;
+        ListNode next;
+
+        ListNode() {
+        }
+
+        ListNode(int val) {
+            this.val = val;
+        }
+
+        ListNode(int val, ListNode next) {
+            this.val = val;
+            this.next = next;
+        }
+    }
+
     int k;
     ListNode root;
 
@@ -74,6 +73,7 @@ class RotateLinkedList {
             return head;
         int tries = k % length;
         this.k = tries;
+        ;
         this.root = head;
         solver(head);
         return root;
