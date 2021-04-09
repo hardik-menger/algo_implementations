@@ -27,7 +27,7 @@ class MatrixPathSum {
         }
     }
 
-    public int minPathSum(int[][] grid) {
+    public int minPathSum2(int[][] grid) {
         if (grid.length == 1 && grid[0].length == 1)
             return grid[0][0];
         int dp[][] = new int[grid.length][grid[0].length];
@@ -47,6 +47,28 @@ class MatrixPathSum {
             }
         }
         return dp[grid.length - 1][grid[0].length - 1];
+    }
+
+    public int minPathSum(int[][] grid) {
+        if (grid.length == 1 && grid[0].length == 1)
+            return grid[0][0];
+        int dp[][] = new int[grid.length][grid[0].length];
+        int sum = 0;
+        for (int i = grid.length - 1; i >= 0; i--) {
+            sum += grid[i][grid[0].length - 1];
+            dp[i][grid[0].length - 1] = sum;
+        }
+        sum = 0;
+        for (int i = grid[0].length - 1; i >= 0; i--) {
+            sum += grid[grid.length - 1][i];
+            dp[grid.length - 1][i] = sum;
+        }
+        for (int i = grid.length - 2; i >= 0; i--) {
+            for (int j = grid[0].length - 2; j >= 0; j--) {
+                dp[i][j] = Math.min(dp[i][j + 1], dp[i + 1][j]) + grid[i][j];
+            }
+        }
+        return dp[0][0];
     }
 
     public static void main(String args[]) {
