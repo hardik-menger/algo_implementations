@@ -2,17 +2,17 @@ import java.util.*;
 
 class MatrixPathSum {
 
-    public int minPathSum(int[][] grid) {
+    public int minPathSum1(int[][] grid) {
         if (grid.length == 1 && grid[0].length == 1)
             return grid[0][0];
         int[][] memo = new int[grid.length][grid[0].length];
         for (int[] row : memo)
             Arrays.fill(row, Integer.MAX_VALUE);
-        solve(grid, memo, 0, 0);
+        solve1(grid, memo, 0, 0);
         return memo[0][0];
     }
 
-    private int solve(int[][] grid, int[][] memo, int i, int j) {
+    private int solve1(int[][] grid, int[][] memo, int i, int j) {
         if (i > grid.length - 1 || j > grid[0].length - 1)
             return Integer.MAX_VALUE;
 
@@ -21,10 +21,32 @@ class MatrixPathSum {
         if (i == grid.length - 1 && j == grid[0].length - 1)
             return grid[i][j];
         else {
-            int adder = Math.min(solve(grid, memo, i + 1, j), solve(grid, memo, i, j + 1));
+            int adder = Math.min(solve1(grid, memo, i + 1, j), solve1(grid, memo, i, j + 1));
             memo[i][j] = grid[i][j] + adder;
             return memo[i][j];
         }
+    }
+
+    public int minPathSum(int[][] grid) {
+        if (grid.length == 1 && grid[0].length == 1)
+            return grid[0][0];
+        int dp[][] = new int[grid.length][grid[0].length];
+        int sum = 0;
+        for (int i = 0; i < grid.length; i++) {
+            sum += grid[i][0];
+            dp[i][0] = sum;
+        }
+        sum = 0;
+        for (int i = 0; i < grid[0].length; i++) {
+            sum += grid[0][i];
+            dp[0][i] = sum;
+        }
+        for (int i = 1; i < grid.length; i++) {
+            for (int j = 1; j < grid[i].length; j++) {
+                dp[i][j] = Math.min(dp[i][j - 1], dp[i - 1][j]) + grid[i][j];
+            }
+        }
+        return dp[grid.length - 1][grid[0].length - 1];
     }
 
     public static void main(String args[]) {
