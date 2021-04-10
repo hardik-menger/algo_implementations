@@ -64,8 +64,7 @@ class WordSearch {
     public static void main(String args[]) {
         WordSearch wordSearch = new WordSearch();
         char res[][] = { { 'C', 'A', 'A' }, { 'A', 'A', 'A' }, { 'B', 'C', 'D' } };
-        char res1[][] = { { 'A' } };
-        String ip = "A";
-        System.out.println(wordSearch.exist(res1, ip));
+        String ip = "AAAAA";
+        System.out.println(wordSearch.exist(res, ip));
     }
 }
