@@ -1,46 +1,38 @@
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
-class RomanNumber {
+class ValidParentheses {
     // SOLUTION BEGIN
     void pre() throws Exception {
 
     }
 
-    public String intToRoman(int num) {
-        Map<Integer, String> map = new HashMap<>();
-        map.put(1, "I");
-        map.put(5, "V");
-        map.put(10, "X");
-        map.put(50, "L");
-        map.put(100, "C");
-        map.put(500, "D");
-        map.put(1000, "M");
-        map.put(4, "IV");
-        map.put(9, "IX");
-        map.put(40, "XL");
-        map.put(90, "XC");
-        map.put(400, "CD");
-        map.put(900, "CM");
-        int[] values = { 1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1 };
-        StringBuilder sb = new StringBuilder();
-        while (num != 0)
-            for (int i : values) {
-                if (num >= i) {
-                    sb.append(map.get(i));
-                    num -= i;
-                    break;
-                }
+    public boolean isValid(String s) {
+        Stack<Character> st = new Stack<>();
+        HashSet<Character> brackets = new HashSet<>(Arrays.asList('{', '[', '('));
+
+        for (char c : s.toCharArray()) {
+            if (brackets.contains(c))
+                st.add(c);
+            else {
+                if (st.empty())
+                    return false;
+                if (st.peek() == '{' && c == '}' || st.peek() == '(' && c == ')' || st.peek() == '[' && c == ']')
+                    st.pop();
+                else
+                    return false;
             }
-        return sb.toString();
+
+        }
+        return st.empty();
+
     }
 
     void solve(int TC) throws Exception {
-        pn(intToRoman(3));
-        pn(intToRoman(13));
-        pn(intToRoman(9));
-        pn(intToRoman(90));
-        pn(intToRoman(20));
+        pn(isValid("{[]}"));
+        pn(isValid("{[(]}"));
+        pn(isValid("{{"));
+        pn(isValid("}"));
     }
 
     static boolean multipleTC = false;
@@ -62,7 +54,7 @@ class RomanNumber {
 
     public static void main(String[] args) throws Exception {
         try {
-            new RomanNumber().run();
+            new ValidParentheses().run();
         } catch (Exception e) {
 
         }
