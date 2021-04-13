@@ -1,27 +1,10 @@
+import java.util.*;
 
 class SortedListtoBinarySearchTree {
 
-    public class ListNode {
+    public class TreeNode {
 
         int val;
-        ListNode next;
-
-        ListNode() {
-        }
-
-        ListNode(int val) {
-            this.val = val;
-        }
-
-        ListNode(int val, ListNode next) {
-            this.val = val;
-            this.next = next;
-        }
-
-    }
-
-    public class TreeNode {
-        int val, height = 1;
         TreeNode left;
         TreeNode right;
 
@@ -37,11 +20,22 @@ class SortedListtoBinarySearchTree {
             this.left = left;
             this.right = right;
         }
+    }
 
-        int height(TreeNode N) {
-            if (N == null)
-                return 0;
-            return N.height;
+    public class ListNode {
+        int val;
+        ListNode next;
+
+        ListNode() {
+        }
+
+        ListNode(int val) {
+            this.val = val;
+        }
+
+        ListNode(int val, ListNode next) {
+            this.val = val;
+            this.next = next;
         }
     }
 
@@ -50,18 +44,55 @@ class SortedListtoBinarySearchTree {
     public TreeNode sortedListToBST(ListNode root) {
         int len = getLength(root);
         this.head = root;
-        return solve(len);
+        return convertListToBST(0, len - 1);
     }
 
-    private TreeNode solve(int length) {
-        if (length <= 0)
+    public void levelOrder(TreeNode root) {
+        List<List<Integer>> al = new ArrayList<List<Integer>>();
+        Queue<TreeNode> queue = new LinkedList<TreeNode>();
+        queue.add(root);
+        if (root == null) {
+            System.out.println("?");
+            return;
+        }
+        while (true) {
+            if (queue.isEmpty())
+                break;
+            int size = queue.size();
+            ArrayList<Integer> rowres = new ArrayList<Integer>();
+            while (size > 0) {
+                TreeNode firstChoice = queue.poll();
+                if (firstChoice != null) {
+                    rowres.add(firstChoice.val);
+                    if (firstChoice.left != null)
+                        queue.add(firstChoice.left);
+                    if (firstChoice.right != null)
+                        queue.add(firstChoice.right);
+                }
+                size--;
+
+            }
+            al.add(rowres);
+        }
+        for (List<Integer> a : al) {
+            for (int i : a) {
+                System.out.print(i + " ");
+            }
+            System.out.println(" ");
+
+        }
+    }
+
+    private TreeNode convertListToBST(int l, int r) {
+        if (l > r)
             return null;
-        TreeNode left = solve(length / 2);
-        TreeNode root = new TreeNode(head.val);
-        root.left = left;
+        int mid = (l + r) / 2;
+        TreeNode left = this.convertListToBST(l, mid - 1);
+        TreeNode node = new TreeNode(this.head.val);
+        node.left = left;
         this.head = this.head.next;
-        root.right = solve(length - 1 - length / 2);
-        return root;
+        node.right = this.convertListToBST(mid + 1, r);
+        return node;
     }
 
     private int getLength(ListNode root) {
