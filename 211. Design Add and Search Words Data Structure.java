@@ -1,3 +1,5 @@
+import java.util.*;
+
 class DesignAddSearchWordsDataStructure {
     public class WordDictionary {
         private class TrieNode {
