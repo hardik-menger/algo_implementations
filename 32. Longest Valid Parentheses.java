@@ -1,5 +1,5 @@
 class LongestValidParentheses {
-    public int longestValidParentheses(String s) {
+    public int longestValidParentheses1(String s) {
         if (s == null)
             return -1;
         if (s.length() == 0)
@@ -37,5 +37,22 @@ class LongestValidParentheses {
             }
         }
         return res;
+    }
+
+    public int longestValidParentheses(String s) {
+        char c[] = s.toCharArray();
+        int dp[] = new int[c.length];
+        int ans = 0;
+        for (int i = 1; i < dp.length; i++) {
+            if (c[i] == ')' && c[i - 1] == '(') {
+                dp[i] = i - 2 >= 0 ? dp[i - 2] : 0 + 2;
+            } else if (i - dp[i - 1] - 1 >= 0 && c[i] == ')' && c[i - 1] == ')') {
+                if (c[i - dp[i - 1] - 1] == '(') {
+                    dp[i] = dp[i - 1] + dp[i - dp[i - 1] - 2 >= 0 ? i - dp[i - 1] - 2 : 0] + 2;
+                }
+            }
+            ans = Math.max(ans, dp[i]);
+        }
+        return ans;
     }
 }
