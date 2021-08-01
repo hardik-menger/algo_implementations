@@ -33,7 +33,7 @@ class LargestRectangleiHistogram {
 
     }
 
-    public int largestRectangleArea(int[] height) {
+    public int largestRectangleArea2(int[] height) {
         if (height == null || height.length == 0) {
             return 0;
         }
@@ -55,6 +55,33 @@ class LargestRectangleiHistogram {
         }
         for (int i = 0; i < height.length; i++) {
             maxArea = Math.max(maxArea, height[i] * (lessFromRight[i] - lessFromLeft[i] - 1));
+        }
+        return maxArea;
+    }
+
+    public int largestRectangleArea(int[] height) {
+        if (height == null || height.length == 0) {
+            return 0;
+        }
+        int maxArea = 0, i = 0;
+        Stack<Integer> st = new Stack<Integer>();
+        while (i < height.length) {
+            if (st.empty() || height[st.peek()] <= height[i])
+                st.push(i++);
+            else {
+                int currentbartocalculate = st.pop();
+                int left = st.peek();
+                int localans = height[currentbartocalculate] * (st.empty() ? i : i - left - 1);
+                if (localans > maxArea)
+                    maxArea = localans;
+            }
+        }
+        while (st.empty() == false) {
+            int currentbartocalculate = st.pop();
+            int localans = height[currentbartocalculate] * (st.empty() ? i : i - st.peek() - 1);
+
+            if (localans > maxArea)
+                maxArea = localans;
         }
         return maxArea;
     }
