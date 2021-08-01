@@ -70,15 +70,16 @@ class LargestRectangleiHistogram {
                 st.push(i++);
             else {
                 int currentbartocalculate = st.pop();
-                int left = st.peek();
-                int localans = height[currentbartocalculate] * (st.empty() ? i : i - left - 1);
+                int left = (st.empty() ? i : i - st.peek() - 1);
+                int localans = height[currentbartocalculate] * left;
                 if (localans > maxArea)
                     maxArea = localans;
             }
         }
         while (st.empty() == false) {
             int currentbartocalculate = st.pop();
-            int localans = height[currentbartocalculate] * (st.empty() ? i : i - st.peek() - 1);
+            int left = (st.empty() ? i : i - st.peek() - 1);
+            int localans = height[currentbartocalculate] * left;
 
             if (localans > maxArea)
                 maxArea = localans;
