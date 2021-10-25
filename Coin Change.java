@@ -43,13 +43,24 @@ class CoinChange {
         return ans;
     }
 
+    public static int count2(int S[], int m, int n) {
+        int dp[] = new int[n + 1];
+        dp[0] = 1;
+        for (int i = 0; i < m; i++)
+            for (int j = S[i]; j <= n; j++)
+                dp[j] += dp[j - S[i]];
+        return dp[n];
+    }
+
     // Driver code
     public static void main(String args[]) {
-        int arr[] = { 1, 2, 3 };
-        int n = 4;
-        int dp[][] = new int[arr.length][n + 1];
-        for (int i = 0; i < arr.length; i++)
-            Arrays.fill(dp[i], -1);
-        System.out.println(count1(arr, dp, 0, n));
+        int arr[] = { 1, 2, 5 };
+        int n = 5, m = arr.length;
+        // int dp[][] = new int[arr.length][n + 1];
+        // for (int i = 0; i < arr.length; i++)
+        // Arrays.fill(dp[i], -1);
+        // System.out.println(count1(arr, dp, 0, n));
+        System.out.println(count2(arr, m, n));
+
     }
 }
