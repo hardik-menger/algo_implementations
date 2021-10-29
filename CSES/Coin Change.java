@@ -1,3 +1,5 @@
+package CSES;
+
 import java.util.Arrays;
 
 class CoinChange {
@@ -24,25 +26,6 @@ class CoinChange {
         return count(S, m - 1, n) + count(S, m, n - S[m - 1]);
     }
 
-    static int count1(int S[], int dp[][], int index, int sum) {
-        if (sum == 0)
-            return 1;
-
-        if (index >= dp.length || sum < 0)
-            return 0;
-
-        if (dp[index][sum] != -1)
-            return dp[index][sum];
-
-        int left = count1(S, dp, index, sum - S[index]);
-        int right = count1(S, dp, index + 1, sum);
-
-        int ans = left + right;
-        dp[index][sum] = ans;
-
-        return ans;
-    }
-
     public static int count2(int S[], int m, int n) {
         int dp[] = new int[n + 1];
         dp[0] = 1;
@@ -52,15 +35,25 @@ class CoinChange {
         return dp[n];
     }
 
+    public static int count3(int S[], int m, int n) {
+        int dp[] = new int[n + 1];
+        dp[0] = 1;
+        for (int j = 1; j <= n; j++)
+            for (int i = 0; i < m; i++) {
+                if (S[i] > j)
+                    continue;
+                dp[j] += dp[j - S[i]];
+            }
+        return dp[n];
+    }
+
     // Driver code
     public static void main(String args[]) {
-        int arr[] = { 1, 2, 5 };
-        int n = 5, m = arr.length;
-        // int dp[][] = new int[arr.length][n + 1];
-        // for (int i = 0; i < arr.length; i++)
-        // Arrays.fill(dp[i], -1);
-        // System.out.println(count1(arr, dp, 0, n));
+        int arr[] = { 2, 3, 5 };
+        int n = 9, m = arr.length;
+        System.out.println(count(arr, m, n));
         System.out.println(count2(arr, m, n));
+        System.out.println(count3(arr, m, n));
 
     }
 }
