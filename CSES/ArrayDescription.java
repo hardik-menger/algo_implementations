@@ -1,31 +1,52 @@
 import java.util.*;
 import java.io.*;
 
-public class EditDistance {
+class ArrayDescription {
     // SOLUTION BEGIN
     void pre() throws Exception {
 
     }
 
+    long M = 1000000007;
+
     void solve(int TC) throws Exception {
-        String s1 = n();
-        String s2 = n();
-        int n = s1.length(), m = s2.length();
-        int dp[][] = new int[n + 1][m + 1];
-        dp[0][0] = 0;
-        for (int i = 1; i <= n; i++)
-            dp[i][0] = i;
-        for (int i = 1; i <= m; i++)
-            dp[0][i] = i;
-        for (int i = 1; i <= n; i++) {
-            for (int j = 1; j <= m; j++) {
-                if (s1.charAt(i - 1) == s2.charAt(j - 1))
-                    dp[i][j] = dp[i - 1][j - 1];
-                else
-                    dp[i][j] = Math.min(Math.min(dp[i - 1][j - 1], dp[i - 1][j]), dp[i][j - 1]) + 1;
+        int n = ni();
+        int m = ni();
+        int a[] = new int[n];
+        for (int i = 0; i < n; i++)
+            a[i] = ni();
+        long dp[][] = new long[m + 1][n];
+        for (int i = 0; i < n; i++) {
+            if (i == 0) {
+                if (a[i] == 0) {
+                    for (int j = 1; j <= m; j++) {
+                        dp[j][i] = 1;
+                    }
+                } else {
+                    dp[a[i]][i] = 1;
+                }
+                continue;
             }
+            if (a[i] != 0)
+                dp[a[i]][i] = ((dp[a[i] - 1][i - 1]) % M + dp[a[i]][i - 1] % M
+                        + ((a[i] + 1 <= m) ? dp[a[i] + 1][i - 1] % M : 0)) % M;
+            else
+                for (int j = 1; j <= m; j++) {
+                    dp[j][i] = (dp[j - 1][i - 1] % M + dp[j][i - 1] % M + ((j + 1 <= m) ? dp[j + 1][i - 1] % M : 0))
+                            % M;
+
+                }
         }
-        pn(dp[s1.length()][s2.length()]);
+        if (a[n - 1] != 0)
+            pn(dp[a[n - 1]][n - 1] % M);
+        else {
+            long res = 0;
+            for (int j = 1; j <= m; j++) {
+                res += dp[j][n - 1];
+            }
+            pn(res % M);
+        }
+
     }
 
     static boolean multipleTC = false;
@@ -47,7 +68,7 @@ public class EditDistance {
 
     public static void main(String[] args) throws Exception {
         try {
-            new EditDistance().run();
+            new ArrayDescription().run();
         } catch (Exception e) {
             e.printStackTrace();
         }
