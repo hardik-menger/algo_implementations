@@ -50,8 +50,8 @@ class CoinChange {
         dp[0] = 1;
         for (int i = 0; i < m; i++)
             for (int j = S[i]; j <= n; j++)
-                dp[j] += dp[j - S[i]];
-        return dp[n];
+                dp[j] =(int) ((dp[j] % M+ dp[j - S[i]] % M) % M);
+        return dp[n] ;
     }
 
     // total ways
@@ -122,32 +122,26 @@ class CoinChange {
         return (int) arr[totalCoins][sum];
     }
 
+    static int arr[][] = new int[100 + 5][1000000 + 5];
+
     // min ways
-    public static double minWays2(int coins[], int sum) {
+    public static int minWays2(int coins[], int sum) {
         int totalCoins = coins.length;
-
-        // Creating array which stores subproblems' solutions
-        int[][] arr = new int[totalCoins + 1][sum + 1];
-
         // Initialising first column with 0
-        for (int i = 1; i <= totalCoins; i++) {
+        for (int i = 0; i <= totalCoins; i++) {
             arr[i][0] = 1;
         }
 
         // Implementing the recursive solution
-        for (int i = 0; i < totalCoins; i++) {
+        for (int i = 1; i <= totalCoins; i++) {
             for (int j = 1; j <= sum; j++) {
-                if (i == 0) {
-                    arr[i][j] = (j % coins[i - 1] == 0) ? 1 : 0;
-                } else {
-                    arr[i][j] = arr[i - 1][j];
-                    if (j >= coins[i - 1])
-                        arr[i][j] += arr[i][j - coins[i - 1]];
-                }
+                arr[i][j] = (int) (arr[i - 1][j] % M);
+                if (coins[i - 1] <= j)
+                    arr[i][j] += arr[i][j - coins[i - 1]] % M;
             }
         }
 
-        return arr[totalCoins][sum] % M;
+        return arr[totalCoins][sum];
     }
 
     // Driver code
@@ -159,9 +153,9 @@ class CoinChange {
         int arr[] = new int[m];
         for (int i = 0; i < m; i++)
             arr[i] = sc.nextInt();
-        // System.out.println(minWays2(arr, n));
+        System.out.println(minWays2(arr, n));
         // System.out.println(totalWays2(arr, n));
-        System.out.println(minWays(arr, arr.length, n));
+        System.out.println(minWays(arr, m, n));
         // System.out.println(totalWays(arr, arr.length, n));
 
     }
