@@ -1,9 +1,10 @@
 package CSES;
 
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.*;
+import java.io.*;
 
 class CoinChange {
+
     static long M = 1000000007;
 
     static int count(int S[], int m, int n) {
@@ -49,9 +50,12 @@ class CoinChange {
         int dp[] = new int[n + 1];
         dp[0] = 1;
         for (int i = 0; i < m; i++)
-            for (int j = S[i]; j <= n; j++)
-                dp[j] =(int) ((dp[j] % M+ dp[j - S[i]] % M) % M);
-        return dp[n] ;
+            for (int j = S[i]; j <= n; j++) {
+                dp[j] = (int) ((dp[j] + dp[j - S[i]]));
+                if (dp[j] > M)
+                    dp[j] -= M;
+            }
+        return dp[n];
     }
 
     // total ways
@@ -63,6 +67,8 @@ class CoinChange {
                 if (S[i] > j)
                     continue;
                 dp[j] += dp[j - S[i]];
+                if (dp[j] >= M)
+                    dp[j] -= M;
             }
         return dp[n];
     }
@@ -97,35 +103,9 @@ class CoinChange {
         return (int) arr[totalCoins][sum];
     }
 
-    // total ways
-    public static int totalWays2(int coins[], int sum) {
-        int totalCoins = coins.length;
-
-        // Creating array which stores subproblems' solutions
-        double[][] arr = new double[totalCoins + 1][sum + 1];
-
-        // Initialising first column with 0
-        for (int i = 1; i <= totalCoins; i++) {
-            arr[i][0] = 1;
-        }
-
-        // Implementing the recursive solution
-        for (int j = 1; j <= sum; j++) {
-            for (int i = 1; i <= totalCoins; i++) {
-                if (coins[i - 1] <= j)
-                    arr[i][j] = arr[i][j - 1] + arr[i][j - coins[i - 1]];
-                else
-                    arr[i][j] = arr[i - 1][j];
-            }
-        }
-
-        return (int) arr[totalCoins][sum];
-    }
-
-    static int arr[][] = new int[100 + 5][1000000 + 5];
-
     // min ways
     public static int minWays2(int coins[], int sum) {
+        int arr[][] = new int[coins.length + 1][sum + 1];
         int totalCoins = coins.length;
         // Initialising first column with 0
         for (int i = 0; i <= totalCoins; i++) {
@@ -144,19 +124,124 @@ class CoinChange {
         return arr[totalCoins][sum];
     }
 
-    // Driver code
-    public static void main(String args[]) {
-        // int arr[] = { 2, 3, 5, 4 };
-        // int n = 9, m = arr.length;
-        Scanner sc = new Scanner(System.in);
-        int m = sc.nextInt(), n = sc.nextInt();
-        int arr[] = new int[m];
-        for (int i = 0; i < m; i++)
-            arr[i] = sc.nextInt();
-        System.out.println(minWays2(arr, n));
-        // System.out.println(totalWays2(arr, n));
-        System.out.println(minWays(arr, m, n));
-        // System.out.println(totalWays(arr, arr.length, n));
+    // SOLUTION BEGIN
+    void pre() throws Exception {
 
     }
+
+    void solve(int TC) throws Exception {
+        int m = ni();
+        int n = ni();
+        int a[] = new int[m];
+        for (int i = 0; i < m; i++) {
+            a[i] = ni();
+        }
+        // pn(minWays(a, m, n));
+        pn(totalWays2(a, n));
+    }
+
+    static boolean multipleTC = false;
+    static FastReader in;
+    static PrintWriter out;
+    static Scanner sc;
+
+    void run() throws Exception {
+        in = new FastReader();
+        out = new PrintWriter(System.out);
+        sc = new Scanner(System.in);
+        int T = (multipleTC) ? ni() : 1;
+        pre();
+        for (int t = 1; t <= T; t++)
+            solve(t);
+        out.flush();
+        out.close();
+    }
+
+    public static void main(String[] args) throws Exception {
+        try {
+            new CoinChange().run();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    int bit(long n) {
+        return (n == 0) ? 0 : (1 + bit(n & (n - 1)));
+    }
+
+    void p(Object o) {
+        out.print(o);
+    }
+
+    void pn(Object o) {
+        out.println(o);
+    }
+
+    void pni(Object o) {
+        out.println(o);
+        out.flush();
+    }
+
+    String n() throws Exception {
+        return in.next();
+    }
+
+    String nln() throws Exception {
+        return in.nextLine();
+    }
+
+    int ni() throws Exception {
+        return in.nextInt();
+    }
+
+    long nl() throws Exception {
+        return in.nextLong();
+    }
+
+    double nd() throws Exception {
+        return in.nextDouble();
+    }
+
+    class FastReader {
+        BufferedReader br;
+        StringTokenizer st;
+
+        public FastReader() {
+            br = new BufferedReader(new InputStreamReader(System.in));
+        }
+
+        String next() {
+            while (st == null || !st.hasMoreElements()) {
+                try {
+                    st = new StringTokenizer(br.readLine());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return st.nextToken();
+        }
+
+        int nextInt() {
+            return Integer.parseInt(next());
+        }
+
+        long nextLong() {
+            return Long.parseLong(next());
+        }
+
+        double nextDouble() {
+            return Double.parseDouble(next());
+        }
+
+        String nextLine() {
+            String str = "";
+            try {
+                str = br.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return str;
+        }
+    }
+
 }
