@@ -74,7 +74,7 @@ class CoinChange {
     }
 
     // min
-    public static int minCoinss2(int coins[], int sum) {
+    public static int minCoins2(int coins[], int sum) {
         int totalCoins = coins.length;
 
         // Creating array which stores subproblems' solutions
