@@ -13,6 +13,26 @@ class MoneySums {
         int a[] = new int[n];
         for (int i = 0; i < n; i++)
             a[i] = ni();
+        soln2(n, a);
+    }
+
+    private void soln2(int n, int[] a) {
+        TreeSet<Integer> al = new TreeSet<Integer>();
+        al.add(a[0]);
+        for (int i = 1; i < n; i++) {
+            int num = a[i];
+            int size = al.size();
+            ArrayList<Integer> tmp = new ArrayList<Integer>();
+            for (int j : al)
+                tmp.add(num + j);
+            tmp.add(num);
+            al.addAll(tmp);
+        }
+        pn(al.size());
+        pn(al.stream().map(String::valueOf).collect(Collectors.joining(" ")));
+    }
+
+    private void soln1(int n, int[] a) {
         int maxx = n * 1000;
         boolean dp[][] = new boolean[n + 1][maxx + 1];
         dp[0][0] = true;
