@@ -15,16 +15,16 @@ class DecodeWays {
 
     public int numDecodings(String s) {
         int n = s.length();
-        int one = 1, two = 0;
+        int next = 1, prev = 0;
         for (int i = n - 1; i >= 0; i--) {
-            int temp = s.charAt(i) == '0' ? 0 : one;
+            int temp = s.charAt(i) == '0' ? 0 : next;
             if (i + 1 < n && (s.charAt(i) == '1' || s.charAt(i) == '2' && s.charAt(i + 1) < '7')) {
-                temp += two;
+                temp += prev;
             }
-            two = one;
-            one = temp;
+            prev = next;
+            next = temp;
         }
-        return one;
+        return next;
 
     }
 
