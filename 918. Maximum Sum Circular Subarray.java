@@ -1,7 +1,7 @@
 class MaximumSumCircularSubarray {
     public int maxSubarraySumCircular(int[] nums) {
-        int localMax = 0, globalMax = nums[0], localMin = 0, globalMin = nums[0], sum = 0;
-        for (int i = 0; i < nums.length; i++) {
+        int localMax = nums[0], globalMax = nums[0], localMin = nums[0], globalMin = nums[0], sum = nums[0];
+        for (int i = 1; i < nums.length; i++) {
             localMax = Math.max(localMax + nums[i], nums[i]);
             globalMax = Math.max(globalMax, localMax);
             localMin = Math.min(localMin + nums[i], nums[i]);
