@@ -1,14 +1,10 @@
 class MaximumSubarray {
     public int maxSubArray(int[] nums) {
-        int full = Integer.MIN_VALUE;
-        int half = 0;
-        for (int i : nums) {
-            half += i;
-            if (half > full)
-                full = half;
-            if (half < 0)
-                half = 0;
+        int local = nums[0], global = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            local = Math.max(nums[i], local + nums[i]);
+            global = Math.max(global, local);
         }
-        return full;
+        return global;
     }
 }
