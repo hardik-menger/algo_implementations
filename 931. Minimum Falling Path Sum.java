@@ -72,7 +72,7 @@ class Main {
         return res;
     }
 
-    public int minFallingPathSum(int[][] matrix) {
+    public int minFallingPathSum2(int[][] matrix) {
         if (matrix.length == 1)
             return matrix[0][0];
         int res = Integer.MAX_VALUE;
@@ -96,6 +96,27 @@ class Main {
                         recursive(matrix, hm, i + 1, j - 1));
         hm.put(key, result);
         return result;
+    }
+
+    public int minFallingPathSum(int[][] matrix) {
+        if (matrix.length == 1)
+            return matrix[0][0];
+        int dp[][] = new int[matrix.length][matrix.length];
+        dp[0] = matrix[0];
+        int min = Integer.MAX_VALUE;
+        for (int i = 1; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                dp[i][j] = matrix[i][j] + dp[i - 1][j];
+                if (j - 1 >= 0)
+                    dp[i][j] = Math.min(dp[i][j], matrix[i][j] + dp[i - 1][j - 1]);
+                if (j + 1 < matrix[i].length)
+                    dp[i][j] = Math.min(dp[i][j], matrix[i][j] + dp[i - 1][j + 1]);
+                if (i == matrix.length - 1)
+                    min = Math.min(min, dp[i][j]);
+
+            }
+        }
+        return min;
     }
 
     void solve(int TC) throws Exception {
