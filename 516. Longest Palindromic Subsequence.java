@@ -7,24 +7,26 @@ class Main516 {
 
     }
 
-    int lcs(char[] X, char[] Y) {
-        int m = X.length, n = Y.length;
-        int dp[][] = new int[m + 1][n + 1];
+    int lcs(String X, String Y) {
+        int m = X.length(), n = Y.length();
+        int dp[][] = new int[2][n + 1];
+        int bi = 0;
         for (int i = 0; i <= m; i++) {
+            bi = i & 1;
             for (int j = 0; j <= n; j++) {
                 if (i == 0 || j == 0)
-                    dp[i][j] = 0;
-                else if (X[i - 1] == Y[j - 1])
-                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                    dp[bi][j] = 0;
+                else if (X.charAt(i - 1) == Y.charAt(j - 1))
+                    dp[bi][j] = dp[1 - bi][j - 1] + 1;
                 else
-                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                    dp[bi][j] = Math.max(dp[1 - bi][j], dp[bi][j - 1]);
             }
         }
-        return dp[m][n];
+        return dp[bi][n];
     }
 
     public int longestPalindromeSubseq(String s) {
-        return lcs(s.toCharArray(), new StringBuilder(s).reverse().toString().toCharArray());
+        return lcs(s, new StringBuilder(s).reverse().toString());
     }
 
     void solve(int TC) throws Exception {
