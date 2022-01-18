@@ -11,26 +11,26 @@ class Main402 {
     public String removeKdigits(String num, int k) {
         if (k == 0)
             return num;
-        Stack<Integer> st = new Stack<Integer>();
+        Stack<Character> st = new Stack<Character>();
         for (int i = 0; i < num.length(); i++) {
             while (!st.isEmpty() && k > 0 && num.charAt(i) < st.peek()) {
                 st.pop();
                 k--;
             }
             if (!st.isEmpty() || num.charAt(i) != '0')
-                st.push((int) num.charAt(i));
+                st.push(num.charAt(i));
         }
-        while (!st.isEmpty() && k > 0)
+        while (!st.isEmpty() && k-- != 0)
             st.pop();
         if (st.isEmpty())
             return "0";
-        ArrayList<Integer> ch = new ArrayList<Integer>();
+        ArrayList<Character> ch = new ArrayList<Character>();
         while (!st.isEmpty()) {
             ch.add(st.pop());
         }
         Collections.reverse(ch);
         return ch.stream().map(Object::toString)
-                .collect(Collectors.joining(", "));
+                .collect(Collectors.joining(""));
     }
 
     void solve(int TC) throws Exception {
