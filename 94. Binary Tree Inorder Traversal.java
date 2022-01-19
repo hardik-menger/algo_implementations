@@ -23,21 +23,19 @@ class Main94 {
     }
 
     public List<Integer> inorderTraversal(TreeNode root) {
-        LinkedList<TreeNode> stack = new LinkedList<>();
-        List<Integer> res = new ArrayList<>();
-        if (root == null)
-            return res;
-        while (!stack.isEmpty() || root != null) {
+        List<Integer> result = new ArrayList<Integer>();
+        LinkedList<TreeNode> st = new LinkedList<TreeNode>();
+        while (st.size() > 0 || root != null) {
             if (root != null) {
-                stack.push(root);
+                st.push(root);
                 root = root.left;
             } else {
-                TreeNode node = stack.pop();
-                res.add(node.val);
+                TreeNode node = st.pop();
+                result.add(node.val);
                 root = node.right;
             }
         }
-        return res;
+        return result;
     }
 
     // SOLUTION BEGIN

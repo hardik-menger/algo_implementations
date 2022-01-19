@@ -25,24 +25,23 @@ class Main106 {
     }
 
     // SOLUTION BEGIN
-    int postIndex = 0;
 
     public TreeNode buildTree(int[] inorder, int[] postorder) {
-        postIndex = postorder.length - 1;
         HashMap<Integer, Integer> hm = new HashMap<Integer, Integer>();
         for (int i = 0; i < inorder.length; ++i)
             hm.put(inorder[i], i);
-        return solve(hm, inorder, postorder, 0, inorder.length - 1);
+        return solve(hm, inorder, postorder, 0, inorder.length - 1, 0, postorder.length - 1);
     }
 
-    private TreeNode solve(HashMap<Integer, Integer> hm, int[] inorder, int[] postorder, int istart, int iend) {
-        if (istart > iend)
+    private TreeNode solve(HashMap<Integer, Integer> hm, int[] inorder, int[] postorder, int istart, int iend,
+            int pstart, int pend) {
+        if (istart > iend || pstart > pend)
             return null;
-        int rootData = postorder[postIndex--];
+        int rootData = postorder[pend];
         TreeNode root = new TreeNode(rootData);
         int inIndex = hm.get(rootData);
-        root.right = solve(hm, inorder, postorder, inIndex + 1, iend);
-        root.left = solve(hm, inorder, postorder, istart, inIndex - 1);
+        root.right = solve(hm, inorder, postorder, inIndex + 1, iend, pstart + (inIndex - istart), pend - 1);
+        root.left = solve(hm, inorder, postorder, istart, inIndex - 1, pstart, pstart + (inIndex - istart) - 1);
         return root;
     }
 
