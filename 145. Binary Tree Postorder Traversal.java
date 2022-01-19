@@ -48,11 +48,20 @@ class Main145 {
         while (!stack.isEmpty() || root != null) {
             if (root != null) {
                 stack.push(root);
-                res.addFirst(root.val);
-                root = root.right;
+                root = root.left;
             } else {
-                TreeNode node = stack.pop();
-                root = node.left;
+                TreeNode node = stack.peek().right;
+                if (node != null) {
+                    root = node;
+                } else {
+                    node = stack.pop();
+                    res.add(node.val);
+                    while (!stack.isEmpty() && stack.peek().right == node) {
+                        node = stack.pop();
+                        res.add(node.val);
+                    }
+                }
+
             }
         }
         return res;
