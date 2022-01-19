@@ -49,7 +49,7 @@ class Main106 {
 
     }
 
-    void solve() throws Exception {
+    void solve(int t) throws Exception {
         int n = ni();
     }
 
