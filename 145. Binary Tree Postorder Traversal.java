@@ -40,31 +40,38 @@ class Main145 {
         return stack2;
     }
 
+    // 1
+    // 2,3
+    // null,4,7,null
     public List<Integer> postorderTraversal(TreeNode root) {
         LinkedList<TreeNode> stack = new LinkedList<>();
-        LinkedList<Integer> res = new LinkedList<>();
+        List<Integer> res = new ArrayList<>();
         if (root == null)
             return res;
         while (!stack.isEmpty() || root != null) {
-            if (root != null) {
+            while (!isLeaf(root)) {
                 stack.push(root);
                 root = root.left;
-            } else {
-                TreeNode node = stack.peek().right;
-                if (node != null) {
-                    root = node;
-                } else {
-                    node = stack.pop();
-                    res.add(node.val);
-                    while (!stack.isEmpty() && stack.peek().right == node) {
-                        node = stack.pop();
-                        res.add(node.val);
-                    }
-                }
-
             }
+            if (root != null)
+                res.add(root.val);
+            while (!stack.isEmpty() && root == stack.peek().right) {
+                root = stack.pop();
+                res.add(root.val);
+            }
+            if (!stack.isEmpty())
+                root = stack.peek().right;
+            else
+                root = null;
         }
         return res;
+    }
+
+    boolean isLeaf(TreeNode node) {
+        if (node == null)
+            return true;
+        else
+            return node.left == null && node.right == null;
     }
 
     // SOLUTION BEGIN

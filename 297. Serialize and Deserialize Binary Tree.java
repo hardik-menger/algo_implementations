@@ -1,7 +1,13 @@
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import java.io.*;
 
-class Main94 {
+class Main297 {
+    // SOLUTION BEGIN
+    void pre() throws Exception {
+
+    }
 
     public class TreeNode {
         int val;
@@ -22,7 +28,7 @@ class Main94 {
         }
     }
 
-    public List<Integer> inorderTraversal(TreeNode root) {
+    public String inorderTraversal(TreeNode root) {
         List<Integer> result = new ArrayList<Integer>();
         LinkedList<TreeNode> st = new LinkedList<TreeNode>();
         while (st.size() > 0 || root != null) {
@@ -35,16 +41,71 @@ class Main94 {
                 root = node.right;
             }
         }
-        return result;
+        return result.stream().map(String::valueOf)
+                .collect(Collectors.joining(","));
     }
 
-    // SOLUTION BEGIN
-    void pre() throws Exception {
+    public String preorderTraversal(TreeNode root) {
+        List<Integer> result = new ArrayList<Integer>();
+        LinkedList<TreeNode> st = new LinkedList<TreeNode>();
+        while (st.size() > 0 || root != null) {
+            if (root != null) {
+                result.add(root.val);
+                st.push(root);
+                root = root.left;
+            } else {
+                TreeNode node = st.pop();
+                root = node.right;
+            }
+        }
+        return result.stream().map(String::valueOf)
+                .collect(Collectors.joining(","));
+    }
 
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        return helper(0, 0, inorder.length - 1, preorder, inorder);
+    }
+
+    public TreeNode helper(int preStart, int inStart, int inEnd, int[] preorder, int[] inorder) {
+        if (preStart > preorder.length - 1 || inStart > inEnd) {
+            return null;
+        }
+        TreeNode root = new TreeNode(preorder[preStart]);
+        int inIndex = 0; // Index of current root in inorder
+        for (int i = inStart; i <= inEnd; i++) {
+            if (inorder[i] == root.val) {
+                inIndex = i;
+            }
+        }
+        root.left = helper(preStart + 1, inStart, inIndex - 1, preorder, inorder);
+        root.right = helper(preStart + inIndex - inStart + 1, inIndex + 1, inEnd, preorder, inorder);
+        return root;
+    }
+
+    public String serialize(TreeNode root) {
+        return preorderTraversal(root) + ":" + inorderTraversal(root);
+    }
+
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        String[] representations = data.split(":");
+        if (representations.length < 2)
+            return null;
+        System.out.println(Arrays.toString(representations));
+        int[] preorderTraversal = Arrays.stream(representations[0].split(",")).mapToInt(Integer::parseInt).toArray();
+        int[] inorderTraversal = Arrays.stream(representations[1].split(",")).mapToInt(Integer::parseInt).toArray();
+        return buildTree(preorderTraversal, inorderTraversal);
     }
 
     void solve(int TC) throws Exception {
-        int n = ni();
+        TreeNode node = new TreeNode(1);
+        node.left = new TreeNode(2);
+        node.right = new TreeNode(2);
+        String serial = serialize(node);
+        System.out.println(serial);
+        node = deserialize(serial);
+        System.out.println(inorderTraversal(node));
+
     }
 
     static boolean multipleTC = false;
@@ -66,9 +127,9 @@ class Main94 {
 
     public static void main(String[] args) throws Exception {
         try {
-            new Main94().run();
+            new Main297().run();
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 
