@@ -7,9 +7,10 @@ class Main2166 {
     Set<Integer> one = new HashSet<>();
     Set<Integer> zero = new HashSet<>();
 
-    public Bitset(int size) {
+    public void Bitset(int size) {
         this.size = size;
-        for(int i=0;i<size;i++) zero.add(i);
+        for (int i = 0; i < size; i++)
+            zero.add(i);
     }
 
     public void fix(int idx) {
