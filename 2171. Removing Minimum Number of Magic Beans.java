@@ -5,19 +5,14 @@ class Main2171 {
 
     public long minimumRemoval(int[] beans) {
         Arrays.sort(beans);
-        int l = 0, r = beans.length - 1, ans = 0;
-        while (l <= r) {
-            int small = beans[l];
-            int large = beans[r];
-            int localAns = Math.min(large - small, small);
-            System.out.println(localAns);
-            if (localAns == large - small)
-                r--;
-            else
-                l++;
-            ans += localAns;
-        }
-        return ans;
+        long n = beans.length;
+        long sum = 0;
+        for (int i = 0; i < beans.length; i++)
+            sum += beans[i];
+        long result = Long.MAX_VALUE;
+        for (int i = 0; i < beans.length; i++, n--)
+            result = Math.min(result, sum - n * beans[i]);
+        return result;
     }
 
     // SOLUTION BEGIN
