@@ -3,11 +3,11 @@ import java.util.*;
 class L2192 {
 
     public List<List<Integer>> getAncestors(int n, int[][] edges) {
-        List<List<Integer>> ans = new ArrayList();
-        List<List<Integer>> directChild = new ArrayList();
+        List<List<Integer>> ans = new ArrayList<>();
+        List<List<Integer>> directChild = new ArrayList<>();
         for (int i = 0; i < n; i++) {
-            ans.add(new ArrayList());
-            directChild.add(new ArrayList());
+            ans.add(new ArrayList<>());
+            directChild.add(new ArrayList<>());
         }
         for (int[] e : edges)
             directChild.get(e[0]).add(e[1]);
