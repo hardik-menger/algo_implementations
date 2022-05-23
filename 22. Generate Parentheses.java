@@ -13,19 +13,25 @@ class Main22 {
 
     public List<String> generateParenthesis(int n) {
         List<String> result = new ArrayList<String>();
-        recursive(result, n, 0, "");
+        recursive(result, n, 0, new StringBuilder());
         return result;
     }
 
-    private void recursive(List<String> result, int canOpen, int canClose, String string) {
+    private void recursive(List<String> result, int canOpen, int canClose, StringBuilder cur) {
         if (canOpen == 0 && canClose == 0) {
-            result.add(string);
+            result.add(cur.toString());
             return;
         }
-        if (canOpen > 0)
-            recursive(result, canOpen - 1, canClose + 1, string + "(");
-        if (canClose > 0)
-            recursive(result, canOpen, canClose - 1, string + ")");
+        if (canOpen > 0) {
+            cur.append("(");
+            recursive(result, canOpen - 1, canClose + 1, cur);
+            cur.deleteCharAt(cur.length() - 1);
+        }
+        if (canClose > 0) {
+            cur.append(")");
+            recursive(result, canOpen, canClose - 1, cur);
+            cur.deleteCharAt(cur.length() - 1);
+        }
     }
 
     static boolean multipleTC = false;
