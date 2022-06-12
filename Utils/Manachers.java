@@ -71,7 +71,7 @@ class Manacher {
 
     // test client
     public static void main(String[] args) {
-        String s = "kiomaramol";
+        String s = "aacecaaa";
         Manacher manacher = new Manacher(s);
         System.out.println(manacher.longestPalindromicSubstring());
         for (int i = 0; i < 2 * s.length(); i++)
