@@ -2,19 +2,18 @@ import java.util.*;
 
 class L856 {
 
-    public int scoreOfParentheses(String s) {
+    public int scoreOfParentheses(String S) {
         Stack<Integer> stack = new Stack<>();
-        stack.push(0);
-        for (char c : s.toCharArray()) {
-            if (c == '(')
-                stack.push(0);
-            else {
-                int curr = stack.pop();
-                int prev = stack.pop();
-                stack.push(prev + Math.max(curr * 2, 1));
+        int cur = 0;
+        for (char c : S.toCharArray()) {
+            if (c == '(') {
+                stack.push(cur);
+                cur = 0;
+            } else {
+                cur = stack.pop() + Math.max(cur * 2, 1);
             }
         }
-        return stack.peek();
+        return cur;
     }
 
     public static void main(String[] args) throws Exception {
