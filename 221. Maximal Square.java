@@ -30,10 +30,10 @@ class Main221 {
         int n = matrix.length, m = matrix[0].length;
         int dp[][] = new int[n + 1][m + 1];
         int ans = 0;
-        for (int i = n - 1; i >= 0; i--)
-            for (int j = m - 1; j >= 0; j--) {
+        for (int i = 1; i <= m; i++)
+            for (int j = 1; j <= n; j++) {
                 dp[i][j] = matrix[i][j] == '1'
-                        ? 1 + Math.min(Math.min(dp[i][j + 1], dp[i + 1][j]), dp[i + 1][j + 1])
+                        ? 1 + Math.min(Math.min(dp[i][j - 1], dp[i - 1][j]), dp[i - 1][j - 1])
                         : 0;
                 ans = Math.max(ans, dp[i][j]);
             }

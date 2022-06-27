@@ -6,7 +6,7 @@ https://github.com/ashuray/InterviewRoom
 CSES Sanket singh dp <br />
 Aditya verma binarysearch, sliding window,dp <br />
 https://leetcode.com/tag/graph/discuss/655708/Graph-For-Beginners-Problems-or-Pattern-or-Sample-Solutions <br />
-
+https://leetcode.com/tag/string/discuss/1333049/Collections-of-string-questions-pattern-for-upcoming-placement-2021
 
 Todos <br />
 https://leetcode.com/discuss/general-discussion/458695/dynamic-programming-patterns <br />

@@ -45,21 +45,24 @@ class Main {
     }
 
     public int minimumTotal(List<List<Integer>> triangle) {
-        List<Integer> dp = new ArrayList<>();
-        for (int i : triangle.get(0))
-            dp.add(i);
-        for (int i = 1; i < triangle.size(); i++) {
-            List<Integer> al = new ArrayList<>();
-            for (int j = 0; j < triangle.get(i).size(); j++) {
-                al.add(j, Math.min(
-                        (dp.size() > j) ? triangle.get(i).get(j) + dp.get(j)
-                                : Integer.MAX_VALUE,
-                        (dp.size() > j - 1 && j - 1 >= 0) ? triangle.get(i).get(j) + dp.get(j - 1)
-                                : Integer.MAX_VALUE));
+        int dp[] = new int[triangle.size()];
+        int m = triangle.size();
+        int n = triangle.get(m - 1).size(); // last row size
+        int[] M = new int[n];
+        M[0] = triangle.get(0).get(0);
+        for (int i = 1; i < m; i++) {
+            List<Integer> cur = triangle.get(i);
+            for (int j = cur.size() - 1; j >= 0; j--) {
+                if (j == 0) {
+                    M[j] = M[0] + cur.get(j);
+                } else if (j == cur.size() - 1) {
+                    M[j] = M[j - 1] + cur.get(j);
+                } else {
+                    M[j] = Math.min(M[j - 1], M[j]) + cur.get(j);
+                }
             }
-            dp = al;
         }
-        return dp.stream().max((a, b) -> b - a).get();
+        return Arrays.stream(M).min().orElse(Integer.MAX_VALUE);
     }
 
     void solve(int TC) throws Exception {

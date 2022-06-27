@@ -25,16 +25,15 @@ class CoinChange322 {
 
     public int coinChange(int S[], int target) {
         int n = S.length;
-        int dp[] = new int[target + 1];
+        int dp[] = new int[n + 1];
         Arrays.fill(dp, Integer.MAX_VALUE);
         dp[0] = 0;
-        for (int i = 0; i < n; i++) {
-            for (int j = 1; j <= target; j++) {
-
+        for (int i = 1; i < target; i++) {
+            for (int j = 0; j < n; j++) {
                 if (S[i] <= j && dp[j - S[i]] != Integer.MAX_VALUE)
-                    dp[j] = Math.min(dp[j], dp[j - S[i]] + 1);
+                    dp[i] = Math.min(dp[i], dp[i - S[j]]);
             }
         }
-        return dp[target] == Integer.MAX_VALUE ? -1 : dp[target];
+        return dp[n];
     }
 }
