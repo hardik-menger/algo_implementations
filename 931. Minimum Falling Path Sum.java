@@ -98,7 +98,7 @@ class Main {
         return result;
     }
 
-    public int minFallingPathSum(int[][] matrix) {
+    public int minFallingPathSum3(int[][] matrix) {
         if (matrix.length == 1)
             return matrix[0][0];
         int dp[][] = new int[matrix.length][matrix.length];
@@ -117,6 +117,14 @@ class Main {
             }
         }
         return min;
+    }
+
+    public int minFallingPathSum(int[][] A) {
+        for (int i = 1; i < A.length; ++i)
+            for (int j = 0; j < A.length; ++j)
+                A[i][j] += Math.min(A[i - 1][j],
+                        Math.min(A[i - 1][Math.max(0, j - 1)], A[i - 1][Math.min(A.length - 1, j + 1)]));
+        return Arrays.stream(A[A.length - 1]).min().getAsInt();
     }
 
     void solve(int TC) throws Exception {
