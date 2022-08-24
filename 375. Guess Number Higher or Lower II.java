@@ -3,7 +3,7 @@ import random.*;
 
 class L375 {
 
-    public int getMoneyAmount(int n) {
+    public int getMoneyAmount1(int n) {
         int dp[][] = new int[n + 1][n + 1];
         for (int[] a : dp)
             Arrays.fill(a, Integer.MAX_VALUE);
@@ -23,6 +23,25 @@ class L375 {
                     dp[left][right], Math.max(j + recur(left, j - 1, dp), j + recur(j + 1, right, dp)));
         }
         return dp[left][right];
+    }
+
+    public int getMoneyAmount(int n) {
+        int dp[][] = new int[n + 1][n + 1];
+        for (int i = 1; i < n; i++) {
+            dp[i][i + 1] = i;
+        }
+        for (int len = 3; len <= n; len++) {
+            for (int i = 1; i <= n - len + 1; i++) {
+                int cost = Integer.MAX_VALUE;
+                int j = i + len - 1;
+                for (int pivot = i; pivot <= j; pivot++) {
+                    cost = Math.min(cost, pivot + Math.max((pivot - 1 >= i ? dp[i][pivot - 1] : 0),
+                            (pivot + 1 <= j ? dp[pivot + 1][j] : 0)));
+                }
+                dp[i][j] = cost;
+            }
+        }
+        return dp[1][n];
     }
 
     public static void main(String[] args) throws Exception {
