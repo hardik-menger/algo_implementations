@@ -1,0 +1,119 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Launch ArrayDescription",
+            "request": "launch",
+            "mainClass": "CSES.ArrayDescription",
+            "projectName": "algo_implementations_2cea4a76"
+        },
+        {
+            "type": "java",
+            "name": "Launch RectangleCutting",
+            "request": "launch",
+            "mainClass": "CSES.RectangleCutting",
+            "projectName": "algo_implementations_2cea4a76"
+        },
+        {
+            "type": "java",
+            "name": "Launch RemovingDigits",
+            "request": "launch",
+            "mainClass": "CSES.RemovingDigits",
+            "projectName": "algo_implementations_2cea4a76"
+        },
+        {
+            "type": "java",
+            "name": "Launch CoinChange",
+            "request": "launch",
+            "mainClass": "CoinChange",
+            "projectName": "algo_implementations_2cea4a76"
+        },
+        {
+            "type": "java",
+            "name": "Launch Permutations",
+            "request": "launch",
+            "mainClass": "Permutations",
+            "projectName": "algo_implementations_2cea4a76"
+        },
+        {
+            "type": "java",
+            "name": "Launch PermutationsString",
+            "request": "launch",
+            "mainClass": "PermutationsString",
+            "projectName": "algo_implementations_2cea4a76"
+        },
+        {
+            "type": "java",
+            "name": "Launch RomanNumber",
+            "request": "launch",
+            "mainClass": "RomanNumber",
+            "projectName": "algo_implementations_2cea4a76"
+        },
+        {
+            "type": "java",
+            "name": "Launch RomanToIntNumber",
+            "request": "launch",
+            "mainClass": "RomanToIntNumber",
+            "projectName": "algo_implementations_2cea4a76"
+        },
+        {
+            "type": "java",
+            "name": "Launch AVLTree",
+            "request": "launch",
+            "mainClass": "Utils.AVLTree",
+            "projectName": "algo_implementations_2cea4a76"
+        },
+        {
+            "type": "java",
+            "name": "Launch Dijkishtra",
+            "request": "launch",
+            "mainClass": "Utils.Dijkishtra",
+            "projectName": "algo_implementations_2cea4a76"
+        },
+        {
+            "type": "java",
+            "name": "Launch Manacher",
+            "request": "launch",
+            "mainClass": "Utils.Manacher",
+            "projectName": "algo_implementations_2cea4a76"
+        },
+        {
+            "type": "java",
+            "name": "Launch PrimeSeive",
+            "request": "launch",
+            "mainClass": "Utils.PrimeSeive",
+            "projectName": "algo_implementations_2cea4a76"
+        },
+        {
+            "type": "java",
+            "name": "Launch ValidParentheses",
+            "request": "launch",
+            "mainClass": "ValidParentheses",
+            "projectName": "algo_implementations_2cea4a76"
+        },
+        {
+            "type": "java",
+            "name": "Launch MainTaskScheduler",
+            "request": "launch",
+            "mainClass": "random.MainTaskScheduler",
+            "projectName": "algo_implementations_2cea4a76"
+        },
+        {
+            "type": "java",
+            "name": "Launch test",
+            "request": "launch",
+            "mainClass": "test",
+            "projectName": "algo_implementations_2cea4a76"
+        }
+    ]
+}

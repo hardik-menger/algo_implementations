@@ -22,20 +22,20 @@ class L973 {
     }
 
     private int partition(int[][] points, int l, int r) {
-        int pivot = points[r][0] * points[r][0] + points[r][1] * points[r][1];
-        int newpivot = l;
+        int pivotDistance = points[r][0] * points[r][0] + points[r][1] * points[r][1];
+        int newPivot = l;
         for (int i = l; i < r; i++) {
-            if ((points[i][0] * points[i][0] + points[i][1] * points[i][1]) < pivot) {
-                int[] temp = points[newpivot];
-                points[newpivot] = points[i];
-                points[i] = temp;
-                newpivot++;
+            if (points[i][0] * points[i][0] + points[i][1] * points[i][1] < pivotDistance) {
+                int[] temp = points[i];
+                points[i] = points[newPivot];
+                points[newPivot] = temp;
+                newPivot++;
             }
         }
-        int[] temp = points[newpivot];
-        points[newpivot] = points[r];
+        int[] temp = points[newPivot];
+        points[newPivot] = points[r];
         points[r] = temp;
-        return newpivot;
+        return newPivot;
     }
 
     public static void main(String[] args) throws Exception {
