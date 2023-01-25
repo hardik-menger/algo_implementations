@@ -23,6 +23,8 @@ public class DSU {
                 parentB = temp;
             }
             parents[parentB] = parentA;
+            if (size[parentB] == 0)
+                size[parentB]++;
             size[parentA] += size[parentB];
             return true;
         }
@@ -34,5 +36,9 @@ public class DSU {
             return a;
         parents[a] = find(parents[a]);
         return parents[a];
+    }
+
+    public int[] getSizes() {
+        return size;
     }
 }
