@@ -41,4 +41,8 @@ public class DSU {
     public int[] getSizes() {
         return size;
     }
+
+    public int[] getParents() {
+        return parents;
+    }
 }

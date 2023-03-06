@@ -6,6 +6,27 @@
     "configurations": [
         {
             "type": "java",
+            "name": "L2276",
+            "request": "launch",
+            "mainClass": "L2276",
+            "projectName": "algo_implementations_2cea4a76"
+        },
+        {
+            "type": "java",
+            "name": "L2024",
+            "request": "launch",
+            "mainClass": "L2024",
+            "projectName": "algo_implementations_2cea4a76"
+        },
+        {
+            "type": "java",
+            "name": "Launch L658",
+            "request": "launch",
+            "mainClass": "L658",
+            "projectName": "algo_implementations_2cea4a76"
+        },
+        {
+            "type": "java",
             "name": "Launch Current File",
             "request": "launch",
             "mainClass": "${file}"

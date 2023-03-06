@@ -1,0 +1,17 @@
+{
+	"leetcode snippet": {
+		"prefix": "java",
+		"body": [
+			"import java.util.*;",
+			"import random.*;",
+			"",
+			"class L$0 {",
+			"    public static void main(String[] args) throws Exception {",
+			"        L$0 obj = new L$0();",
+			"    }",
+			"}",
+			""
+		],
+		"description": "leetcode snippet"
+	}
+}
