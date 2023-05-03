@@ -7,19 +7,13 @@ class L787 {
             adjMatrix[flight[0]][flight[1]] = flight[2];
         }
         int[] distances = new int[n];
-        int[] currentStops = new int[n];
         Arrays.fill(distances, Integer.MAX_VALUE);
-        Arrays.fill(currentStops, Integer.MAX_VALUE);
         distances[src] = 0;
-        currentStops[src] = 0;
-        PriorityQueue<int[]> minHeap = new PriorityQueue<int[]>((a, b) -> a[1] - b[1]);
+        Queue<int[]> minHeap = new LinkedList<>();
         minHeap.offer(new int[] { src, 0, 0 });
         while (!minHeap.isEmpty()) {
             int[] info = minHeap.poll();
             int node = info[0], stops = info[2], cost = info[1];
-            if (node == dst) {
-                return cost;
-            }
             if (stops == K + 1) {
                 continue;
             }
@@ -31,10 +25,7 @@ class L787 {
                     if (dU + wUV < dV) {
                         minHeap.offer(new int[] { nei, dU + wUV, stops + 1 });
                         distances[nei] = dU + wUV;
-                    } else if (stops < currentStops[nei]) {
-                        minHeap.offer(new int[] { nei, dU + wUV, stops + 1 });
                     }
-                    currentStops[nei] = stops;
                 }
             }
         }

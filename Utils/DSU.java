@@ -42,6 +42,10 @@ public class DSU {
         return size;
     }
 
+    public int getSize(int index) {
+        return size[index] == 0 ? 1 : size[index] + 1;
+    }
+
     public int[] getParents() {
         return parents;
     }

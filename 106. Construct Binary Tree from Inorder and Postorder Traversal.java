@@ -40,8 +40,10 @@ class Main106 {
         int rootData = postorder[pend];
         TreeNode root = new TreeNode(rootData);
         int inIndex = hm.get(rootData);
-        root.right = solve(hm, inorder, postorder, inIndex + 1, iend, pstart + (inIndex - istart), pend - 1);
-        root.left = solve(hm, inorder, postorder, istart, inIndex - 1, pstart, pstart + (inIndex - istart) - 1);
+        int subTreeSize = inIndex - istart;
+        root.left = solve(hm, inorder, postorder, istart, inIndex - 1, pstart, pstart + subTreeSize - 1);
+        root.right = solve(hm, inorder, postorder, inIndex + 1, iend, pstart + subTreeSize, pend - 1);
+
         return root;
     }
 
