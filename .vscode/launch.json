@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "L17",
+            "request": "launch",
+            "mainClass": "L17",
+            "projectName": "algo_implementations_2cea4a76"
+        },
+        {
+            "type": "java",
             "name": "L729",
             "request": "launch",
             "mainClass": "L729",
