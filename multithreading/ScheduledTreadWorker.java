@@ -80,7 +80,7 @@ public class ScheduledTreadWorker {
                     }
                 }
                 queue.poll();
-                if (null != scheduledTask.type && !executor.isShutdown()) {
+                if (null != scheduledTask.type && !shutdown) {
                     switch (scheduledTask.type) {
                         case ONCE ->
                             executor.submit(scheduledTask.task);
