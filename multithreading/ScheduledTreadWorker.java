@@ -12,14 +12,14 @@ enum TaskType {
 
 public class ScheduledTreadWorker {
 
-    volatile boolean shutdown = false;
+    private volatile boolean shutdown = false;
 
-    class ScheduledTask {
+    class ScheduledTask implements Comparable<ScheduledTask> {
 
         Runnable task;
-        long delay;
-        long interval;
-        long nextExecution;
+        long nextExecution; // in nanoseconds
+        long interval;      // for PERIODIC
+        long delay;         // for DELAYED
         TaskType type;
 
         public ScheduledTask(Runnable task, long nextExecution) {
@@ -28,120 +28,146 @@ public class ScheduledTreadWorker {
             this.type = TaskType.ONCE;
         }
 
-        public ScheduledTask(Runnable task, long nextExecution, TaskType taskType, long period) {
+        public ScheduledTask(Runnable task, long nextExecution, TaskType type, long period) {
             this.task = task;
-            if (taskType == TaskType.PERIODIC) {
+            this.nextExecution = nextExecution;
+            this.type = type;
+            if (type == TaskType.PERIODIC) {
                 this.interval = period;
-            } else if (taskType == TaskType.DELAYED) {
+            }
+            if (type == TaskType.DELAYED) {
                 this.delay = period;
             }
-            this.nextExecution = nextExecution;
-            this.type = taskType;
         }
 
+        @Override
         public int compareTo(ScheduledTask other) {
-            return Long.compare(nextExecution, other.nextExecution);
+            return Long.compare(this.nextExecution, other.nextExecution);
         }
     }
 
-    private Thread schedulerThread;
-    
+    private final PriorityQueue<ScheduledTask> queue = new PriorityQueue<>();
+    private final ExecutorService executor;
+    private final ReentrantLock lock = new ReentrantLock();
+    private final Condition newTaskAdded = lock.newCondition();
+    private final Thread schedulerThread;
+
     public ScheduledTreadWorker(int threadCount) {
-        schedulerThread = new Thread(() -> {
-            try {
-                this.processTasks();
-            } catch (InterruptedException | ExecutionException e) {
-                Thread.currentThread().interrupt();
-            }
-        });
+        this.executor = Executors.newFixedThreadPool(threadCount);
+        schedulerThread = new Thread(this::processTasks);
         schedulerThread.start();
     }
 
-    public void processTasks() throws InterruptedException, ExecutionException {
+    private void processTasks() {
         while (!shutdown) {
+            ScheduledTask taskToExecute = null;
+            long timeToWait = 0;
+
             lock.lock();
             try {
-                while (queue.isEmpty()) {
-                    try {
-                        newTaskAdded.await();
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
+                while (!shutdown && queue.isEmpty()) {
+                    newTaskAdded.await();
                 }
+
                 if (shutdown) {
                     return;
                 }
-                ScheduledTask scheduledTask = queue.peek();
-                while (scheduledTask.nextExecution > System.nanoTime()) {
-                    try {
-                        newTaskAdded.await(scheduledTask.nextExecution - System.nanoTime(), TimeUnit.NANOSECONDS);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
+
+                long now = System.nanoTime();
+                ScheduledTask head = queue.peek();
+
+                if (head != null) {
+                    if (head.nextExecution <= now) {
+                        taskToExecute = queue.poll();
+                    } else {
+                        timeToWait = head.nextExecution - now;
+                        taskToExecute = null;
                     }
                 }
-                queue.poll();
-                if (null != scheduledTask.type && !shutdown) {
-                    switch (scheduledTask.type) {
-                        case ONCE ->
-                            executor.submit(scheduledTask.task);
-                        case PERIODIC -> {
-                            executor.submit(scheduledTask.task);
-                            scheduledTask.nextExecution += scheduledTask.interval;
-                            queue.add(scheduledTask);
-                            newTaskAdded.signalAll();
-                        }
-                        case DELAYED -> {
-                            var fut = executor.submit(scheduledTask.task);
-                            fut.get();
-                            scheduledTask.nextExecution += scheduledTask.delay;
-                            queue.add(scheduledTask);
-                            newTaskAdded.signalAll();
-                        }
-                        default -> {
-                        }
-                    }
-                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             } finally {
                 lock.unlock();
             }
-        }
 
+            if (taskToExecute != null) {
+                final ScheduledTask task = taskToExecute; // final reference for lambda
+
+                switch (task.type) {
+                    case ONCE:
+                        executor.submit(task.task);
+                        break;
+
+                    case PERIODIC:
+                        executor.submit(task.task);
+                        lock.lock();
+                        try {
+                            task.nextExecution += task.interval;
+                            queue.add(task);
+                            newTaskAdded.signalAll();
+                        } finally {
+                            lock.unlock();
+                        }
+                        break;
+
+                    case DELAYED:
+                        executor.submit(() -> {
+                            try {
+                                task.task.run();
+                            } finally {
+                                lock.lock();
+                                try {
+                                    task.nextExecution = System.nanoTime() + task.delay;
+                                    queue.add(task);
+                                    newTaskAdded.signalAll();
+                                } finally {
+                                    lock.unlock();
+                                }
+                            }
+                        });
+                        break;
+                }
+            } else if (timeToWait > 0) {
+                // Wait until the next task is ready
+                lock.lock();
+                try {
+                    newTaskAdded.awaitNanos(timeToWait);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                } finally {
+                    lock.unlock();
+                }
+            }
+        }
     }
-    PriorityQueue<ScheduledTask> queue = new PriorityQueue<>((a, b) -> Long.compare(a.nextExecution, b.nextExecution));
-    ExecutorService executor = Executors.newFixedThreadPool(3);
-    ReentrantLock lock = new ReentrantLock();
-    Condition newTaskAdded = lock.newCondition();
 
     public void schedule(Runnable task, long delay, TimeUnit unit) {
         lock.lock();
         try {
-            var period = System.nanoTime() + unit.toNanos(delay);
-            ScheduledTask scheduledTask = new ScheduledTask(task, period);
-            queue.add(scheduledTask);
+            long nextExecution = System.nanoTime() + unit.toNanos(delay);
+            queue.add(new ScheduledTask(task, nextExecution));
             newTaskAdded.signalAll();
         } finally {
             lock.unlock();
         }
     }
 
-    public void scheduleAtFixedRate(Runnable task, long period, long interval, TimeUnit unit) {
+    public void scheduleAtFixedRate(Runnable task, long initialDelay, long interval, TimeUnit unit) {
         lock.lock();
         try {
-            var nextExecution = System.nanoTime() + unit.toNanos(period);
-            ScheduledTask scheduledTask = new ScheduledTask(task, nextExecution, TaskType.PERIODIC, unit.toNanos(interval));
-            queue.add(scheduledTask);
+            long nextExecution = System.nanoTime() + unit.toNanos(initialDelay);
+            queue.add(new ScheduledTask(task, nextExecution, TaskType.PERIODIC, unit.toNanos(interval)));
             newTaskAdded.signalAll();
         } finally {
             lock.unlock();
         }
     }
 
-    public void scheduleWithFixedDelay(Runnable task, long period, long delay, TimeUnit unit) {
+    public void scheduleWithFixedDelay(Runnable task, long initialDelay, long delay, TimeUnit unit) {
         lock.lock();
         try {
-            var nextExecution = System.nanoTime() + unit.toNanos(period);
-            ScheduledTask scheduledTask = new ScheduledTask(task, nextExecution, TaskType.DELAYED, unit.toNanos(delay));
-            queue.add(scheduledTask);
+            long nextExecution = System.nanoTime() + unit.toNanos(initialDelay);
+            queue.add(new ScheduledTask(task, nextExecution, TaskType.DELAYED, unit.toNanos(delay)));
             newTaskAdded.signalAll();
         } finally {
             lock.unlock();
@@ -149,39 +175,28 @@ public class ScheduledTreadWorker {
     }
 
     public void shutdown() throws InterruptedException {
+        shutdown = true;
         lock.lock();
         try {
-            shutdown = true;
             newTaskAdded.signalAll();
+            queue.clear();
         } finally {
             lock.unlock();
         }
-        
-        // Wait for scheduler thread to finish
-        if (schedulerThread != null) {
-            schedulerThread.join();
-        }
-        
-        // Now shutdown the executor
+
+        schedulerThread.join();
         executor.shutdown();
         executor.awaitTermination(5, TimeUnit.SECONDS);
     }
 
-    public static void main(String[] args) throws InterruptedException, ExecutionException {
-        ScheduledTreadWorker scheduledTreadWorker = new ScheduledTreadWorker(3);
-        scheduledTreadWorker.schedule(() -> {
-            System.out.println("Task 1");
-        }, 1, TimeUnit.SECONDS);
-        scheduledTreadWorker.scheduleAtFixedRate(() -> {
-            System.out.println("Task 2");
-        }, 1, 5, TimeUnit.SECONDS);
-        scheduledTreadWorker.scheduleWithFixedDelay(() -> {
-            System.out.println("Task 3");
-        }, 1, 3, TimeUnit.SECONDS);
+    public static void main(String[] args) throws InterruptedException {
+        ScheduledTreadWorker worker = new ScheduledTreadWorker(3);
 
-        //shutdown after 10 seconds
-        Thread.sleep(10000);
-        scheduledTreadWorker.shutdown();
+        worker.schedule(() -> System.out.println("Task 1 (Once)"), 1, TimeUnit.SECONDS);
+        worker.scheduleAtFixedRate(() -> System.out.println("Task 2 (Periodic)"), 1, 5, TimeUnit.SECONDS);
+        worker.scheduleWithFixedDelay(() -> System.out.println("Task 3 (Delayed)"), 1, 3, TimeUnit.SECONDS);
+
+        Thread.sleep(15000); // let it run for 15s
+        worker.shutdown();
     }
-
 }
