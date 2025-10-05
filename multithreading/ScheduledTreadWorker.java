@@ -81,7 +81,7 @@ public class ScheduledTreadWorker {
                         taskToExecute = queue.poll();
                     } else {
                         timeToWait = head.nextExecution - now;
-                        taskToExecute = null;
+                        newTaskAdded.awaitNanos(timeToWait);
                     }
                 }
             } catch (InterruptedException e) {
@@ -126,16 +126,6 @@ public class ScheduledTreadWorker {
                             }
                         });
                         break;
-                }
-            } else if (timeToWait > 0) {
-                // Wait until the next task is ready
-                lock.lock();
-                try {
-                    newTaskAdded.awaitNanos(timeToWait);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                } finally {
-                    lock.unlock();
                 }
             }
         }
