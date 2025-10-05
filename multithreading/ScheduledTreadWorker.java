@@ -39,21 +39,19 @@ public class ScheduledTreadWorker {
             this.type = taskType;
         }
 
-        public void run() {
-            task.run();
-        }
-
         public int compareTo(ScheduledTask other) {
             return Long.compare(nextExecution, other.nextExecution);
         }
     }
 
+    private Thread schedulerThread;
+    
     public ScheduledTreadWorker(int threadCount) {
-        Thread schedulerThread = new Thread(() -> {
+        schedulerThread = new Thread(() -> {
             try {
                 this.processTasks();
             } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
+                Thread.currentThread().interrupt();
             }
         });
         schedulerThread.start();
@@ -82,7 +80,7 @@ public class ScheduledTreadWorker {
                     }
                 }
                 queue.poll();
-                if (null != scheduledTask.type) {
+                if (null != scheduledTask.type && !executor.isShutdown()) {
                     switch (scheduledTask.type) {
                         case ONCE ->
                             executor.submit(scheduledTask.task);
@@ -150,7 +148,7 @@ public class ScheduledTreadWorker {
         }
     }
 
-    public void shutdown() {
+    public void shutdown() throws InterruptedException {
         lock.lock();
         try {
             shutdown = true;
@@ -158,7 +156,15 @@ public class ScheduledTreadWorker {
         } finally {
             lock.unlock();
         }
+        
+        // Wait for scheduler thread to finish
+        if (schedulerThread != null) {
+            schedulerThread.join();
+        }
+        
+        // Now shutdown the executor
         executor.shutdown();
+        executor.awaitTermination(5, TimeUnit.SECONDS);
     }
 
     public static void main(String[] args) throws InterruptedException, ExecutionException {
